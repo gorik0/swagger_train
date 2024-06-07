@@ -2,9 +2,19 @@ basePath: /
 consumes:
     - application/json
 definitions:
+    GenericError:
+        description: GenericError generic error
+        properties:
+            message:
+                description: message
+                type: string
+                x-go-name: Message
+        type: object
+        x-go-package: swagger/models
     Product:
         properties:
             description:
+                description: description
                 type: string
                 x-go-name: Description
             id:
@@ -14,34 +24,89 @@ definitions:
                 type: integer
                 x-go-name: ID
             name:
+                description: name
                 type: string
                 x-go-name: Name
             price:
+                description: price
                 format: float
                 type: number
                 x-go-name: Price
             sku:
+                description: s k u
                 type: string
                 x-go-name: SKU
         type: object
         x-go-package: swagger/data
+    ValidationError:
+        description: ValidationError validation error
+        properties:
+            messages:
+                description: messages
+                items:
+                    type: string
+                type: array
+                x-go-name: Messages
+        type: object
+        x-go-package: swagger/models
 info:
     description: Documentationfor Product API
     title: Packcage classification of prod API
     version: 1.0.0
 paths:
     /:
-        post:
+        get:
             description: Returns list of products
-            operationId: postProducts
+            operationId: noParam
+            responses:
+                "200":
+                    $ref: '#/responses/productResponse'
+                "400":
+                    $ref: '#/responses/errorValidate'
+            tags:
+                - products
+        post:
+            description: Create product
+            operationId: createProduct
+            parameters:
+                - in: body
+                  name: Body
+                  schema:
+                    $ref: '#/definitions/Product'
             responses:
                 "200":
                     $ref: '#/responses/productResponse'
             tags:
                 - products
+    /{id}:
+        put:
+            description: Update product with id
+            operationId: updateProduct
+            parameters:
+                - format: int64
+                  in: path
+                  name: id
+                  required: true
+                  type: integer
+                  x-go-name: ID
+            responses:
+                "200":
+                    $ref: '#/responses/noContentResponse'
+            tags:
+                - products
 produces:
     - application/json
 responses:
+    errorResponse:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    errorValidate:
+        description: ""
+        schema:
+            $ref: '#/definitions/ValidationError'
+    noContentResponse:
+        description: ""
     productResponse:
         description: ""
         schema:
