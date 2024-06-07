@@ -9,7 +9,12 @@ import (
 	"time"
 )
 
+//swagger:model
 type Product struct {
+	// the id for the product
+	//
+	// required: false
+	// min: 1
 	ID          int     `json:"id"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
@@ -20,9 +25,11 @@ type Product struct {
 	DeletedOn   string  `json:"-"`
 }
 
-func (p *Product) FromJSON(r io.Reader) error {
+func FromJSON(p interface{}, r io.Reader) error {
 	decoder := json.NewDecoder(r)
-	return decoder.Decode(p)
+	err := decoder.Decode(p)
+	fmt.Println(p)
+	return err
 
 }
 

@@ -1,47 +1,53 @@
+basePath: /
+consumes:
+    - application/json
 definitions:
-    User:
-        description: User represents the user for this application
+    Product:
         properties:
-            birth_year:
-                description: The birth year for this user
+            description:
+                type: string
+                x-go-name: Description
+            id:
+                description: the id for the product
                 format: int64
-                maximum: 2022
-                minimum: 1900
+                minimum: 1
                 type: integer
-                x-go-name: BirthYear
+                x-go-name: ID
             name:
-                description: The name for this user
                 type: string
                 x-go-name: Name
-        required:
-            - name
+            price:
+                format: float
+                type: number
+                x-go-name: Price
+            sku:
+                type: string
+                x-go-name: SKU
         type: object
-        x-go-package: swagger
+        x-go-package: swagger/data
+info:
+    description: Documentationfor Product API
+    title: Packcage classification of prod API
+    version: 1.0.0
 paths:
-    /users:
-        get:
-            description: Insert documentation
-            operationId: getUsers
-            produces:
-                - application/json
-            responses:
-                "200":
-                    description: user response
-                    schema:
-                        items:
-                            $ref: '#/definitions/User'
-                        type: array
+    /:
         post:
-            description: Include documentation
-            operationId: postUser
-            parameters:
-                - in: body
-                  name: Body
-                  schema:
-                    $ref: '#/definitions/User'
-            produces:
-                - application/json
+            description: Returns list of products
+            operationId: postProducts
             responses:
                 "200":
-                    description: user response
+                    $ref: '#/responses/productResponse'
+            tags:
+                - products
+produces:
+    - application/json
+responses:
+    productResponse:
+        description: ""
+        schema:
+            items:
+                $ref: '#/definitions/Product'
+            type: array
+schemes:
+    - http
 swagger: "2.0"

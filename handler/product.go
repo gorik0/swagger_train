@@ -1,3 +1,18 @@
+// Packcage classification of prod API
+//
+// Documentationfor Product API
+// Schemes:http
+// BasePath:  /
+// Version:1.0.0
+// Produces:
+//
+//	-application/json
+//
+// Consumes:
+//
+//	-application/json
+//
+//swagger:meta
 package handler
 
 import (
@@ -24,6 +39,11 @@ func (h ProductsHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route POST / products postProducts
+// Returns list of products
+//responses:
+//200: productResponse
+
 func (h ProductsHandler) PostProducts(w http.ResponseWriter, r *http.Request) {
 	h.l.Println("PostProducts")
 
@@ -33,6 +53,12 @@ func (h ProductsHandler) PostProducts(w http.ResponseWriter, r *http.Request) {
 	data.AddProduct(&prod)
 }
 
+//swagger:response productResponse
+type productResponse struct {
+
+	//	in:body
+	Body []data.Product
+}
 type KeyProduct struct{}
 
 func (h ProductsHandler) PutProducts(w http.ResponseWriter, r *http.Request) {
@@ -62,9 +88,11 @@ func (h ProductsHandler) PutProducts(w http.ResponseWriter, r *http.Request) {
 func (h ProductsHandler) MiddlewareProductsValidate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		var prod *data.Product
+		var prod data.Product
 
-		err := prod.FromJSON(r.Body)
+		err := data.FromJSON(&prod, r.Body)
+		//de := json.NewDecoder(r.Body)
+		//err := de.Decode(prod)
 		if err != nil {
 
 			http.Error(w, fmt.Sprintf("Error while unmarshalling product ::: %s", err), http.StatusBadRequest)

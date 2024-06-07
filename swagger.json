@@ -1,0 +1,13 @@
+{
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Documentationfor Product API",
+    "title": "Packcage classification of prod API",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "paths": {}
+}

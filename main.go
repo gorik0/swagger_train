@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+
 	"swagger/handler"
 	"syscall"
 	"time"
@@ -27,12 +29,24 @@ func main() {
 	putMu := mu.Methods(http.MethodPut).Subrouter()
 
 	//ENDPOINTS
-	getMu.HandleFunc("/", ph.GetProducts)
-	getMu.HandleFunc("/", ph.PostProducts)
-	getMu.HandleFunc("/id:[0-9]+", ph.PutProducts)
-
-	postMu.Use(ph.MiddlewareProductsValidate)
 	putMu.Use(ph.MiddlewareProductsValidate)
+	postMu.Use(ph.MiddlewareProductsValidate)
+
+	opts := middleware.RedocOpts{
+		SpecURL: "swagger.yaml",
+	}
+	sh:= middleware.Redoc(opts,nil)
+
+
+
+
+	getMu.HandleFunc("/", ph.GetProducts)
+	getMu.Handle("/docs", sh)
+	getMu.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
+	postMu.HandleFunc("/", ph.PostProducts)
+	putMu.HandleFunc("/id:[0-9]+", ph.PutProducts)
+
+
 
 	s := http.Server{
 		Addr:         ":9000",
